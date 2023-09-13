@@ -1,6 +1,6 @@
 ---
-- name: Install jenkins in cluster nodes
-  hosts: cluster_nodes
+- name: Install jenkins in target nodes
+  hosts: all
   tasks:
     - name: Install curl, openjdk
       become: true
