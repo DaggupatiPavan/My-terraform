@@ -9,3 +9,4 @@
         region: "{{ regions_list }}"
         instance_ids: "{{ instance_ids }}"
         state: stopped
+        wait: true
