@@ -8,7 +8,7 @@
   tasks:
     - name: Stop instance
       delegate_to: localhost
-      ec2:
+      ec2_instance:
         region: "us-east-1"
         instance_ids: "{{ ansible_ec2_instance_id }}"
         state: stopped
@@ -22,7 +22,7 @@
       
     - name: Start instance
       delegate_to: localhost
-      ec2:
+      ec2_instance:
         region: "us-east-1"
         instance_ids: "{{ ansible_ec2_instance_id }}"
         state: running
