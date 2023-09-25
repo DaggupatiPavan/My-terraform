@@ -3,7 +3,7 @@
   vars:
     regions_list: "us-east-1"
     change_instance_to: "{{ change_instance_to }}"
-  hosts: production
+  hosts: localhost
   serial: 1
   tasks:
     - name: Stop instance
