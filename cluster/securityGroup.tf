@@ -36,7 +36,7 @@ resource "aws_security_group" "security_sg"  {
 
 # Inbound rules
 resource "aws_security_group_rule" "inbound_rules" {
-    count = 6  
+    count = 8 
     type        = "ingress"
     from_port   = element([22,80,6443, 2379, 10250, 10259, 10257, 30000], count.index)
     to_port     = element([22,80,6443, 2380, 10250, 10259, 10257, 32767], count.index)
