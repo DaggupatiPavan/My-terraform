@@ -1,6 +1,6 @@
 ---
 - name: Install nexus
-  hosts: localhost
+  hosts: all
   become: true
   tasks:
   - name: Install openjdk
