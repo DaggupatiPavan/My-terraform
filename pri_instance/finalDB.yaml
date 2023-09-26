@@ -1,4 +1,3 @@
-
 - name: Store IPs in SQL
   hosts: localhost
   gather_facts: yes
@@ -16,8 +15,9 @@
             deployment_type: "AWS"
             current_state: "{{ item.state.name }}"
             instance_type: "{{ item.instance_type }}"
+            instance_id: "{{ item.instance_id }}"
       with_items: "{{ ec2_info.instances }}"
     - name: Insert instance information into PostgreSQL
       shell: |
-        PGPASSWORD=admin123 psql -h localhost -U postgres -c "INSERT INTO provisioned_instances (instance_name, instance_ip, deployment_type, current_state, instance_type) VALUES ('{{ item.instance_name }}', '{{ item.instance_ip }}', '{{ item.deployment_type }}', '{{ item.current_state }}', '{{ item.instance_type }}');"
+        PGPASSWORD=admin123 psql -h localhost -U postgres -c "INSERT INTO provisioned_instances (instance_id, instance_name, instance_ip, deployment_type, current_state, instance_type) VALUES ('{{ item.instance_id }}','{{ item.instance_name }}', '{{ item.instance_ip }}', '{{ item.deployment_type }}', '{{ item.current_state }}', '{{ item.instance_type }}');"
       with_items: "{{ instances_data }}"
