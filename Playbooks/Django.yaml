@@ -1,6 +1,6 @@
 ---
 - name: Install Django
-  hosts: your_target_host
+  hosts: all
   become: yes  # To run tasks as sudo
 
   tasks:
