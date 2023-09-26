@@ -19,5 +19,5 @@
       with_items: "{{ ec2_info.instances }}"
     - name: Insert instance information into PostgreSQL
       shell: |
-        PGPASSWORD=admin123 psql -h localhost -U postgres -c "INSERT INTO provisioned_instances (instance_id, instance_name, instance_ip, deployment_type, current_state, instance_type) VALUES ('{{ item.instance_id }}','{{ item.instance_name }}', '{{ item.instance_ip }}', '{{ item.deployment_type }}', '{{ item.current_state }}', '{{ item.instance_type }}');"
+        PGPASSWORD=admin123 psql -h localhost -U postgres -c "INSERT INTO provisioned_instances (instance_id, instance_name, instance_ip, deployment_type, current_state, instance_type) VALUES ('{{ instance_IDs }}','{{ item.instance_name }}', '{{ item.instance_ip }}', '{{ item.deployment_type }}', '{{ item.current_state }}', '{{ item.instance_type }}');"
       with_items: "{{ instances_data }}"
