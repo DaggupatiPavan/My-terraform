@@ -29,7 +29,7 @@ pipeline {
                         echo "File count: $fileCount"
                         if (fileCount.toInteger() == 3) {
                             sh 'rm -rf * .git'
-                            sh 'git clone https://github.com/yogeshbirla1998/My-terraform.git'
+                            sh 'git clone https://github.com/DaggupatiPavan/My-terraform.git'
                             sh 'cp -r My-terraform/pri_instance/* ./'
                         }
                         sh """
