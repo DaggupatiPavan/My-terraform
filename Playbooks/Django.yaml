@@ -11,3 +11,6 @@
     - name: Install Django
       ansible.builtin.pip:
         name: django
+    - name: Install Djangorestframework
+      ansible.builtin.pip:
+        name: djangorestframework
