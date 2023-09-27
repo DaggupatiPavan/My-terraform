@@ -1,0 +1,38 @@
+pipeline {
+    parameters {
+        choice(name: 'Action', choices: ['apply','destroy'], description: 'apply will create a resource, destroy will delete')
+        choice(name: 'environment', choices: ['stag', 'dev', 'prod'], description: 'Environment for the infrastructure')
+        string(name: 'business_divsion', defaultValue: 'PlatformEngineering', description: 'Business divsion')
+    }
+    agent {
+        label 'master'
+    }
+    stages {
+        stage('Cloning') {
+            steps {
+                script {
+                    sh 'rm -rf * .git'
+                    sh 'git clone https://github.com/DaggupatiPavan/My-terraform.git '
+                }
+            }
+        }
+        stage('Infra Creation') {
+            steps {
+                script {
+                    if (params.Action == 'apply'){
+                        ws("/var/lib/jenkins/workspace/${JOB_NAME}/My-terraform/vpc") {
+                            sh "terraform init -backend=true"
+                            sh "terraform apply -no-color -var environment=${params.environment} -var business_divsion=${params.business_divsion} --auto-approve"
+                        }
+                    }
+                    else{
+                        ws("/var/lib/jenkins/workspace/${JOB_NAME}/My-terraform/vpc") {
+                            sh 'terraform destroy -no-color --auto-approve'
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+

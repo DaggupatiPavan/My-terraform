@@ -1,0 +1,64 @@
+pipeline {
+     
+    agent {
+        label 'master'
+    }
+    stages {
+        stage('Cloning') {
+            steps {
+                script {
+                    sh 'rm -rf * .git'
+                    sh 'git clone https://github.com/DaggupatiPavan/My-terraform.git '
+                    echo "Machine_Type ${params.Machine_Type}"
+                }
+            }
+        }
+        stage('Action on Instance') {
+            steps {
+                script {
+                    if (params.Machine_Type == 'Private_Instance'){
+                        destroyInstance("/var/lib/jenkins/workspace/${JOB_NAME}/My-terraform/pri_instance")
+                        sh "aws s3 rm s3://pe2dev/platform_Enginnering/private_Instance/${params.state_file_location}  --recursive"
+                    }
+                    if (params.Machine_Type == 'Jump_Box'){
+                        destroyInstance("/var/lib/jenkins/workspace/${JOB_NAME}/My-terraform/pub_instance")
+                        sh "aws s3 rm s3://pe2dev/platform_Enginnering/public_Instance/${params.state_file_location}  --recursive"
+                    }
+                    if (params.Machine_Type == 'Cluster'){
+                        destroyInstance("/var/lib/jenkins/workspace/${JOB_NAME}/My-terraform/cluster")
+                        sh "aws s3 rm s3://pe2dev/platform_Enginnering/cluster/${params.state_file_location}  --recursive"
+                    }
+                }   
+                
+            }
+        }
+    }
+}
+
+def destroyInstance(workspacePath) {
+    ws(workspacePath) {
+        // Remove trailing '/' from state_file_location using tr command
+        def cleanedStateLocation = state_file_location.replaceAll(/\/$/, '')
+        sh """
+            cleanedStateLocation=\$(echo "${cleanedStateLocation}" | tr -d '/')
+            sed -i "s/xyz1/\${cleanedStateLocation}/g" backend.tf
+        """
+        sh 'terraform init -backend=true -reconfigure -no-color'
+        sh 'terraform destroy -no-color --auto-approve'
+    }
+}
+
+
+// jenkins@ip-10-63-20-41:~$ cat Private_Instance.sh
+// #!/bin/bash
+// aws s3 ls s3://pe2dev/platform_Enginnering/private_Instance/ |grep -i PRE | awk '{ print $2}'
+
+// jenkins@ip-10-63-20-41:~$ cat Jump_Box.sh
+// #!/bin/bash
+// aws s3 ls s3://pe2dev/platform_Enginnering/public_Instance/ |grep -i PRE | awk '{ print $2}'
+
+// jenkins@ip-10-63-20-41:~$ cat Cluster.sh
+// #!/bin/bash
+// aws s3 ls s3://pe2dev/platform_Enginnering/cluster/ |grep -i PRE | awk '{ print $2}'
+
+// It  has Active choice parameters to store values in parameters  

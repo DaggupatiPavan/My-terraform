@@ -1,0 +1,63 @@
+pipeline {
+    parameters {
+        string(name: 'Instance_IP', description: 'Instance IP to install the required package')
+        // choice(name: 'Tool', choices: ['Ansible', 'Gerrit', 'GitLab', 'Grafana', 'Java', 'Jenkins', 'Kafka', 'Projectlibre', 'MySQL', 'PostgreSQL', 'Python3', 'MongoDB', 'Prometheus'], description: 'Select the required Tool to install')
+    } 
+    agent {
+label 'master'
+    }
+    environment {
+        PE_IP = '54.196.82.198'
+    }
+    stages {
+        stage('Cloning') {
+            steps {
+                sh 'rm -rf * .git'
+                sh 'git clone https://github.com/DaggupatiPavan/My-terraform.git '
+                echo "${BUILD_URL}"
+            }
+        }
+        stage('Creating Inventory File'){
+            steps {
+                script {
+                    ws("/var/lib/jenkins/workspace/${JOB_NAME}/My-terraform/Playbooks/") {
+                        sh "rm -rf myinventory 2> /dev/null && touch myinventory"
+                        sh "echo ${params.Instance_IP} >> myinventory"
+                        // Copy the inventory file to the remote server
+                        sh "scp -o StrictHostKeyChecking=no myinventory ubuntu@${PE_IP}:~/ansible_playbooks/"
+                        // Copy Ansible configuration and playbook to the remote server
+                        sh "scp -o StrictHostKeyChecking=no ansible.cfg ubuntu@${PE_IP}:~/ansible_playbooks/"
+                        sh "scp -o StrictHostKeyChecking=no UpdateCache.yaml ubuntu@${PE_IP}:~/ansible_playbooks/"
+                        sh "scp -o StrictHostKeyChecking=no ${params.Tool}.yaml ubuntu@${PE_IP}:~/ansible_playbooks/"
+                    }
+                }
+            }
+        }
+        stage('Installing required Package Using Ansible') {
+            agent {
+                label 'platformeng'
+            }
+            steps {
+                script {
+                    ws('/home/ubuntu/ansible_playbooks') {
+                        sh 'ansible-playbook UpdateCache.yaml'
+                        sh "ansible-playbook ${params.Tool}.yaml"
+                    }
+                }
+            }
+        }
+    }
+
+    post {
+        failure {
+            build job: 'Suggestions', propagate: false , parameters: [string(name: 'G_BUILD_NUMBER', value: env.BUILD_NUMBER), string(name: 'G_BUILD_URL', value: env.BUILD_URL)]
+        }
+    }
+}
+
+
+// jenkins@ip-10-63-20-41:~$ cat Playbooks.sh
+// #! /bin/bash/
+// curl -s https://api.github.com/repos/DaggupatiPavan/My-terraform/contents/Playbooks | grep "name" | cut -d '"' -f 4 | grep -v -e "UpdateCache.yaml" -e "ansible.cfg" | sed 's/.yaml//g'
+
+// it has Active choice Parameter to list the Tools dynamically 

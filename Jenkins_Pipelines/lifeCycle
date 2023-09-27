@@ -1,0 +1,50 @@
+pipeline {
+    agent {
+        label 'master'
+    }
+    parameters {
+        choice(name: 'action', choices: ['start', 'stop', 'changeType','modifyVolume'], description: 'Action for instance')
+        string(name: 'instanceID', description: 'Provide the Instance ID to take Action')
+        choice(name: 'change_instance_to', choices: ['t2.nano', 't2.micro', 't2.medium', 't2.large', 't2.xlarge'], description: 'Select Instance Type')
+        string(name: 'newVolumeSize',description: 'New size cannot be smaller than existing size')
+    }
+
+    stages {
+        stage('CloneRepo Start, Stop') {
+            steps {
+                script {
+                    sh "rm -rf * .git"
+                    sh "git clone https://github.com/DaggupatiPavan/My-terraform.git"
+                }
+            }
+        }
+        stage('Action on Instances') {
+            steps {
+                script {
+                    def workspacePath = "/var/lib/jenkins/workspace/${JOB_NAME}/My-terraform/LifeCycle"
+                    ws(workspacePath) {
+                        def fileCount = sh(script: 'ls -la | wc -l', returnStdout: true).trim()
+                        echo "File count: $fileCount"
+                        if (fileCount.toInteger() == 3) {
+                            sh 'rm -rf * .git'
+                            sh 'git clone https://github.com/DaggupatiPavan/My-terraform.git'
+                            sh 'cp -r My-terraform/LifeCycle/* ./'
+                        }
+                        if (params.action == 'start') {
+                            sh "ansible-playbook -i inventory Start.yaml -e ansible_ec2_instance_id=${params.instanceID}"
+                        } else if (params.action == 'stop') {
+                            sh "ansible-playbook -i inventory Stop.yaml -e ansible_ec2_instance_id=${params.instanceID}"
+                        } else if (params.action == 'changeType') {
+                            sh "ansible-playbook -i inventory typeChange.yaml -e ansible_ec2_instance_id=${params.instanceID} -e change_instance_to=${params.change_instance_to}"
+                        }else if (params.action == 'modifyVolume') {
+                            sh "ansible-playbook ebs_expansion.yaml -e ansible_ec2_instance_id=${params.instanceID} -e new_vol_size=${params.newVolumeSize}"
+                        } else {
+                            error "Invalid action specified"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
