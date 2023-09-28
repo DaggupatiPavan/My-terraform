@@ -1,6 +1,6 @@
 ---
 - name: Deploy code-server Docker container
-  hosts: localhost
+  hosts: all
   become: yes
 
   tasks:
