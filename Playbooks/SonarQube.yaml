@@ -7,7 +7,9 @@
       apt: 
         name: docker.io
         state: present
-    
+    - name: Installing docker package using pip
+      ansible.builtin.pip:
+        name: docker
     - name: sonarqube Container Creating
       community.docker.docker_container:
         name: sonarqube
