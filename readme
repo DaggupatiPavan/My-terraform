@@ -3,3 +3,4 @@ new line added
 code has some error don't clone the code from github
 create infra in AWS for our Project
 git commit -m "DEV-40 <message>"
+git commit -m "DEV-42 <message>"
