@@ -5,3 +5,4 @@ create infra in AWS for our Project
 git commit -m "DEV-40 <message>"
 git commit -m "DEV-42 <message>"
 git commit -m "DEV-45 <message>"
+git commit -m "DEV-44 <message>"
