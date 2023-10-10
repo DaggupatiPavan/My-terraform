@@ -27,9 +27,13 @@ jobs:
       - name: Pull NGINX Docker image
         run: sudo docker pull nginx
 
+      - name: Remove old Docker container
+        run: sudo docker rm -f nginx2
+
       - name: Run NGINX container
         run: |
           sudo docker run -itd -p 80:80 --name nginx2 nginx
+          sudo docker exec -it nginx2 sh -c "echo '<h1>GitHub Actions Build Number: $GITHUB_RUN_NUMBER</h1>' >> /usr/share/nginx/html/index.html"
 
       - name: Check NGINX status
         run: sudo docker ps -a
