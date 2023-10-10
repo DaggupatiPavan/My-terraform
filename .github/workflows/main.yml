@@ -6,11 +6,7 @@ on:
 
 jobs:
   docker_installation:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
+    runs-on: self-hosted
       - name: Install Docker
         run: sudo apt-get update && sudo apt-get install docker.io -y
 
@@ -18,7 +14,7 @@ jobs:
         run: sudo systemctl start docker
 
   docker:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
