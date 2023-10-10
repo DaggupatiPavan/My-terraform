@@ -1,34 +1,36 @@
-name: Hello World Workflow
-
+name: Docker NGINX Installation
 on:
   push:
     branches:
       - main
 
 jobs:
-  hello_world_job:
-    runs-on:  self-hosted
-
+  docker_installation:
+    runs-on: ubuntu-latest
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-      - name: Test1
-        run: echo "Hello, world! - Stage 1"
+      - name: Install Docker
+        run: sudo apt-get update && sudo apt-get install docker.io -y
 
-  hello_world_job2:
-    runs-on:  self-hosted
+      - name: Set up Docker daemon
+        run: sudo systemctl start docker
+
+  docker:
+    runs-on: ubuntu-latest
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-      - name: Test2
-        run: echo "Hello, world! - Stage 10"
+      - name: Pull NGINX Docker image
+        run: docker pull nginx
 
-      - name: Test3
-        run: echo "Hello, world! - Stage 2"
+      - name: Run NGINX container
+        run: docker run -itd -p 80:80 --name nginx2 nginx
 
-      - name: Test4
-        run: echo "Hello, world! - Stage 3"
+      - name: Check NGINX status
+        run: docker ps -a
 
-      - name: Test5
-        run: echo "Hello, world! - Stage 4"
-
-      - name: Test6
-        run: echo "Hello, world! - Stage 5"
+      - name: Test NGINX
+        run: curl http://localhost
