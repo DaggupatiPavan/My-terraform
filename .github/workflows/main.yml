@@ -32,7 +32,7 @@ jobs:
 
       - name: Run NGINX container
         run: |
-          sudo docker run -d -p 80:80 --name nginx2 nginx
+          sudo docker run -p 80:80 --name nginx2 nginx
           sudo docker exec nginx2 sh -c "echo '<h1>GitHub Actions Build Number: $GITHUB_RUN_NUMBER</h1>' >> /usr/share/nginx/html/index.html"
 
       - name: Check NGINX status
@@ -40,3 +40,12 @@ jobs:
 
       - name: Test NGINX
         run: curl http://ifconfig.me
+
+      - name: Set Build Date
+        id: set_build_date
+        run: echo "::set-output name=date::$(date -u -d '3 months ago' '+%Y-%m-%dT%H:%M:%SZ')"
+      
+      - name: Run Build Simulation
+        run: |
+          echo "Simulating a build for date: ${{ steps.set_build_date.outputs.date }}"
+          # Run your build steps using the simulated date
