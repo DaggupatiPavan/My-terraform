@@ -32,8 +32,8 @@ jobs:
 
       - name: Run NGINX container
         run: |
-          sudo docker run -itd -p 80:80 --name nginx2 nginx
-          sudo docker exec -it nginx2 sh -c "echo '<h1>GitHub Actions Build Number: $GITHUB_RUN_NUMBER</h1>' >> /usr/share/nginx/html/index.html"
+          sudo docker run -p 80:80 --name nginx2 nginx
+          sudo docker exec nginx2 sh -c "echo '<h1>GitHub Actions Build Number: $GITHUB_RUN_NUMBER</h1>' >> /usr/share/nginx/html/index.html"
 
       - name: Check NGINX status
         run: sudo docker ps -a
