@@ -25,14 +25,14 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Pull NGINX Docker image
-        run: docker pull nginx
+        run: sudo docker pull nginx
 
       - name: Run NGINX container
         run: |
-          docker run -itd -p 80:80 --name nginx2 nginx
+          sudo docker run -itd -p 80:80 --name nginx2 nginx
 
       - name: Check NGINX status
-        run: docker ps -a
+        run: sudo docker ps -a
 
       - name: Test NGINX
         run: curl http://ifconfig.me
