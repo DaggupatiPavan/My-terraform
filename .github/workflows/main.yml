@@ -1,21 +1,34 @@
-name: GitHub Actions Demo
-run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
-on: [push]
+name: Hello World Workflow
+
+on:
+  push:
+    branches:
+      - main
+
 jobs:
-  Explore-GitHub-Actions:
-    runs-on: self-hosted
+  hello_world_job:
+    runs-on:  self-hosted
+
     steps:
-      - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
-      - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
-      - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
-      - name: Check out repository code
-        uses: actions/checkout@v4
-      - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
-      - run: echo "🖥️ The workflow is now ready to test your code on the runner."
-      - name: List files in the repository
-        run: |
-          ls ${{ github.workspace }}
-      - run: echo "🍏 This job's status is ${{ job.status }}."
-      - run: whoami
-      - run: pwd
-      - run: ls -la ~/
+
+      - name: Stage 1
+        run: echo "Hello, world! - Stage 1"
+
+  hello_world_job2:
+    runs-on:  self-hosted
+    steps:
+
+      - name: Stage 10
+        run: echo "Hello, world! - Stage 10"
+
+      - name: Stage 2
+        run: echo "Hello, world! - Stage 2"
+
+      - name: Stage 3
+        run: echo "Hello, world! - Stage 3"
+
+      - name: Stage 4
+        run: echo "Hello, world! - Stage 4"
+
+      - name: Stage 5
+        run: echo "Hello, world! - Stage 5"
