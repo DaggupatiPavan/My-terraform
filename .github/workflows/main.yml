@@ -48,4 +48,4 @@ jobs:
       - name: Run Build Simulation
         run: |
           echo "Simulating a build for date: ${{ steps.set_build_date.outputs.date }}"
-          # Run your build steps using the simulated date
+          # Run your build steps using the simulated date time
