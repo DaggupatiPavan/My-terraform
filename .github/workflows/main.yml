@@ -6,8 +6,11 @@ on:
 
 jobs:
   docker_installation:
-    runs-on: self-hosted
+    runs-on: self-hosted  # Use a self-hosted runner
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
       - name: Install Docker
         run: sudo apt-get update && sudo apt-get install docker.io -y
 
@@ -15,8 +18,11 @@ jobs:
         run: sudo systemctl start docker
 
   docker:
-    runs-on: self-hosted
+    runs-on: self-hosted  # Use a self-hosted runner
+    needs: docker_installation
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
 
       - name: Pull NGINX Docker image
         run: docker pull nginx
@@ -29,4 +35,4 @@ jobs:
         run: docker ps -a
 
       - name: Test NGINX
-        run: curl ifconfig.me
+        run: curl http://ifconfig.me
