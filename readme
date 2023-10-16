@@ -11,3 +11,4 @@ git commit -m "DEV-49 <message>"
 git commit -m "DEV-51 <message>"
 test
 test2
+test3
